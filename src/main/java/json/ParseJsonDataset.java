@@ -1,9 +1,5 @@
 package json;
 
-/**
- * @author Crunchify.com
- */
-
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,14 +19,14 @@ public class ParseJsonDataset {
             JSONObject jsonObject = new JSONObject(jsonString);
 //            System.out.println("\n\njsonArray: " + jsonObject);
             JSONObject databaseObject = jsonObject.getJSONObject("database");
-            JSONArray annotationArrays = new JSONArray();
+            JSONArray annotationsArray = new JSONArray();
             Set<String> keysOfDbObject = databaseObject.keySet();
             for (String key : keysOfDbObject) {
-                annotationArrays.put(databaseObject.get(key));
+                annotationsArray.put(databaseObject.get(key));
             }
             List<String> outputList = new LinkedList<>();
-            for (int i = 0; i < annotationArrays.length(); i++) {
-                JSONObject tmpObj = (JSONObject) annotationArrays.get(i);
+            for (int i = 0; i < annotationsArray.length(); i++) {
+                JSONObject tmpObj = (JSONObject) annotationsArray.get(i);
                 JSONArray annotations = (JSONArray) tmpObj.get("annotations");
                 for (int j = 0; j < annotations.length(); j++) {
                     JSONObject tmp = (JSONObject) annotations.get(j);
@@ -52,7 +48,7 @@ public class ParseJsonDataset {
             for (String annotation : outputList) {
                 bufferedWriter.write(annotation + "\n");
             }
-
+            bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException ex) {
             System.out.println(
@@ -60,14 +56,14 @@ public class ParseJsonDataset {
         }
     }
 
-    private static String readJSONtoString(String pathToJSON) {
-        String fileName = "/home/sherafgan/Downloads/activity_net.v1-3.min.json";
+    private static String readJSONtoString(String fileName) {
         String line = null;
         try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             line = bufferedReader.readLine();
 //            System.out.println(line);
+            bufferedReader.close();
         } catch (FileNotFoundException ex) {
             System.out.println("Unable to open file!");
         } catch (IOException ex) {

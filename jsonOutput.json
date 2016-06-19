@@ -2,7 +2,7 @@
   "sentences": [
     {
       "index": 0,
-      "parse": "(ROOT\n  (S\n    (VP (VBG Putting)\n      (PP (IN in)\n        (NP (NN contact) (NNS lenses))))\n    (. .)))",
+      "parse": "(ROOT\n  (S\n    (VP (VBG Putting)\n      (PP (IN in)\n        (NP (NN contact) (NNS lenses))))))",
       "basic-dependencies": [
         {
           "dep": "ROOT",
@@ -31,13 +31,6 @@
           "governorGloss": "Putting",
           "dependent": 4,
           "dependentGloss": "lenses"
-        },
-        {
-          "dep": "punct",
-          "governor": 1,
-          "governorGloss": "Putting",
-          "dependent": 5,
-          "dependentGloss": "."
         }
       ],
       "collapsed-dependencies": [
@@ -68,13 +61,6 @@
           "governorGloss": "Putting",
           "dependent": 4,
           "dependentGloss": "lenses"
-        },
-        {
-          "dep": "punct",
-          "governor": 1,
-          "governorGloss": "Putting",
-          "dependent": 5,
-          "dependentGloss": "."
         }
       ],
       "collapsed-ccprocessed-dependencies": [
@@ -105,13 +91,6 @@
           "governorGloss": "Putting",
           "dependent": 4,
           "dependentGloss": "lenses"
-        },
-        {
-          "dep": "punct",
-          "governor": 1,
-          "governorGloss": "Putting",
-          "dependent": 5,
-          "dependentGloss": "."
         }
       ],
       "tokens": [
@@ -161,18 +140,6 @@
           "pos": "NNS",
           "ner": "O",
           "before": " ",
-          "after": ""
-        },
-        {
-          "index": 5,
-          "word": ".",
-          "originalText": ".",
-          "lemma": ".",
-          "characterOffsetBegin": 25,
-          "characterOffsetEnd": 26,
-          "pos": ".",
-          "ner": "O",
-          "before": "",
           "after": ""
         }
       ]
