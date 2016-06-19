@@ -16,17 +16,29 @@ import java.util.*;
 public class FillDB {
     private static final String DATASET_FILE_NAME = "/home/sherafgan/Downloads/activity_net.v1-3.min.json";
     private static final String ANNOTATIONS_ARRAY_FILE_NAME = "AnnotationsDatasetArray.json";
+    private static final String PATH_TO_CQL_DUMP = "/home/sherafgan/IdeaProjects/SVSE/va_cql_dump.cql";
 
     public static void main(String[] args) throws IOException {
-//        parseDatasetTo(DATASET_FILE_NAME, ANNOTATIONS_ARRAY_FILE_NAME);
-
         FileReader fileReader = new FileReader(ANNOTATIONS_ARRAY_FILE_NAME);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String annotationsString = bufferedReader.readLine();
         bufferedReader.close();
 
         JSONArray video_info_array = new JSONArray(annotationsString);
-        for (int i = 0; i < video_info_array.length(); i++) {
+
+        FileWriter fileWriter = new FileWriter("va_cql_dump.cql");
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        int totalNumberOfLabelsOfAnnotations = 0;
+        int succeedLabelsOfAnnotations = 0;
+
+        //BEGIN Neo4j driver session
+        Driver driver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", "smth"));
+        Session session = driver.session();
+        //END
+
+        int amountOfDataToFill = video_info_array.length();
+        for (int i = 0; i < amountOfDataToFill; i++) {
             HashMap<String, List<Double>> labelToSegments = new HashMap<>();
 
             JSONObject video_info_object = (JSONObject) video_info_array.get(i);
@@ -41,6 +53,7 @@ public class FillDB {
                 for (int k = 0; k < segment.length(); k++) {
                     segments.add(segment.getDouble(k));
                 }
+
                 //segments and label are ready
                 if (labelToSegments.get(label) == null) {
                     labelToSegments.put(label, segments);
@@ -64,8 +77,8 @@ public class FillDB {
             while (iterator.hasNext()) {
                 Map.Entry pair = (Map.Entry) iterator.next();
 
-                String neo4jRelationship = " ";
-                String neo4jObject = " ";
+                String neo4jRelationship = "";
+                String neo4jObject = "";
 
                 FileReader fileReader1 = new FileReader("annotatedJSONs/jsonOutput" + c + ".json");
                 BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
@@ -89,16 +102,65 @@ public class FillDB {
                         neo4jObject = token.get("lemma").toString();
                     }
                 }
-                queryDataToDB(neo4jRelationship, neo4jObject, video_info_object, labelToSegments, (String) pair.getKey());
+                if (neo4jRelationship.length() > 1 & neo4jObject.length() > 1) {
+                    queryDataToDB(session, neo4jRelationship, neo4jObject, video_info_object, labelToSegments, (String) pair.getKey());
 
+                    //BEGIN write queries to dump file
+//                    String query = "create(:Person)-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegments.get((String) pair.getKey()) + "}"
+//                            + "]->(:Object{name:\"" + neo4jObject + "\"});";
+//                    bufferedWriter.write(query + "\n");
+                    //END
+                    succeedLabelsOfAnnotations++;
+                    totalNumberOfLabelsOfAnnotations++;
+                } else {
+                    totalNumberOfLabelsOfAnnotations++;
+                }
                 c++;
             }
+            System.out.println((i + 1) + " of " + amountOfDataToFill);
         }
+        bufferedWriter.flush();
+        bufferedWriter.close();
+
+        //BEGIN Neo4j driver&session close
+        session.close();
+        driver.close();
+        //END
+
+        System.out.println("########################################");
+        System.out.println("Succeed number of labels: " + succeedLabelsOfAnnotations + " of " + totalNumberOfLabelsOfAnnotations);
+        System.out.println("Failed number of labels: " + (totalNumberOfLabelsOfAnnotations - succeedLabelsOfAnnotations) + " of "
+                + totalNumberOfLabelsOfAnnotations);
+        System.out.println("########################################");
+
+//        runCqlDump(PATH_TO_CQL_DUMP);
     }
 
-    private static void queryDataToDB(String rel, String obj, JSONObject video_info_object, HashMap<String, List<Double>> labelToSegment, String label) {
-        Driver driver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", "smth"));
-        Session session = driver.session();
+    private static void runCqlDump(String dumpPath) {
+        FillDB obj = new FillDB();
+        String output = obj.executeCommand("neo4j-shell -file " + dumpPath);
+        System.out.println(output);
+    }
+
+    private String executeCommand(String command) {
+        StringBuilder output = new StringBuilder();
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output.toString();
+    }
+
+    private static void queryDataToDB(Session session, String rel, String obj, JSONObject video_info_object, HashMap<String, List<Double>> labelToSegment, String label) {
+
         String query = "create(:Person)-[:" + rel + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegment.get(label) + "}"
                 + "]->(:Object{name:\"" + obj + "\"})";
         session.run(query);
@@ -108,8 +170,6 @@ public class FillDB {
 //            Record record = result.next();
 //            System.out.println(record.get("title").asString() + " " + record.get("name").asString());
 //        }
-        session.close();
-        driver.close();
     }
 
     private static void annotateLabel(String label, int annotationNum) throws IOException {
