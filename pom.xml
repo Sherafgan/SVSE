@@ -55,5 +55,16 @@
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.21</version>
         </dependency>
+        <!--Jetty Server-->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.3.0.M0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>9.3.0.M0</version>
+        </dependency>
     </dependencies>
 </project>

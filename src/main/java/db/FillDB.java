@@ -161,8 +161,8 @@ public class FillDB {
 
     private static void queryDataToDB(Session session, String rel, String obj, JSONObject video_info_object, HashMap<String, List<Double>> labelToSegment, String label) {
 
-        String query = "create(:Person)-[:" + rel + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegment.get(label) + "}"
-                + "]->(:Object{name:\"" + obj + "\"})";
+        String query = "merge(:PERSON)-[:" + rel + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegment.get(label) + "}"
+                + "]->(:OBJECT{name:\"" + obj + "\"})";
         session.run(query);
 
 //        StatementResult result = session.run("MATCH (a:Person) WHERE a.name = 'Arthur' RETURN a.name AS name, a.title AS title");
