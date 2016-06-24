@@ -1,27 +1,30 @@
 function searchRequest() {
     var searchText = document.getElementById("searchText");
-
-    // $.ajax({
-    //     type: "GET",
-    //     url: "search",
-    //     dataType: 'json',
-    //     data: {searchText: searchText.value},
-    //     success: function (data) {
-    //         alert(data);
-    //     }
-    // })
-    //     .done(function () {
-    //         alert("sdm");
-    //     })
-    //     .fail(function () {
-    //         alert("Sorry. Server unavailable. ");
-    //     });
-
-    //noinspection JSUnresolvedFunction
     $.getJSON("search", {searchText: searchText.value}, function (data) {
-        drawTable(data);
+        document.getElementById("content").innerHTML = "";
+        showVideos(data);
     });
 }
+
+function showVideos(data) {
+    for (var i = 0; i < 10; i++) { //NOTE: i < data.length
+        var videoElement = document.createElement("video");
+        videoElement.id = "vid" + i;
+        videoElement.className = "video-js vjs-default-skin video";
+        // videoElement.autoplay = true;
+        videoElement.controls = true;
+        // videoElement.width = "640";
+        // videoElement.height = "264";
+        $("#content").append(videoElement);
+
+        videojs(document.getElementById("vid" + i), {
+            techOrder: ["youtube"],
+            sources: [{"type": "video/youtube", "src": data[i].url.toString(), "youtube": {"ytControls": 2}}]
+        }, function () {
+        });
+    }
+}
+
 
 function drawTable(data) {
     for (var i = 0; i < data.length; i++) {

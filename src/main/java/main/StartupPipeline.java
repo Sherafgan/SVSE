@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+/**
+ * @author Sherafgan Kandov
+ *         6/19/16.
+ */
+
 public class StartupPipeline {
     public static final StartupPipeline INSTANCE = new StartupPipeline();
 

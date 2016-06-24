@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Semantic Video Search Engine</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- My script-->
+    <script src="scripts.js"></script>
+
+    <!--Video.js-->
+    <link href="http://vjs.zencdn.net/5.10.4/video-js.css" rel="stylesheet">
+    <!-- If you'd like to support IE8 -->
+    <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+
+    <script src="video.js/dist/video.min.js"></script>
+    <script src="videojs-youtube/dist/Youtube.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div id="imaginary_container">
+                <div class="input-group stylish-input-group">
+                    <input id="searchText" type="text" class="form-control" placeholder="Search">
+                    <span class="input-group-addon">
+                       <button onclick="searchRequest()" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="content"></div>
+
+<!--<video-->
+<!--id="video_player"-->
+<!--&gt;-->
+<!--</video>-->
+
+<table id="personDataTable">
+    <tr>
+        <th>url</th>
+        <th>segments</th>
+    </tr>
+
+</table>
+
+</body>
+</html>

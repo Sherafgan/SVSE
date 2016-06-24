@@ -1,0 +1,59 @@
+{
+  "name": "videojs-youtube",
+  "description": "YouTube playback technology for Video.js",
+  "version": "2.0.8",
+  "author": {
+    "name": "Benoit Tremblay"
+  },
+  "main": "dist/Youtube.js",
+  "license": "MIT",
+  "keywords": [
+    "video",
+    "videojs",
+    "video.js",
+    "vjs",
+    "YouTube",
+    "tech"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eXon/videojs-youtube.git"
+  },
+  "peerDependencies": {
+    "video.js": "5.x"
+  },
+  "scripts": {
+    "build": "mkdirp dist && cp src/Youtube.js dist/Youtube.js && uglifyjs src/Youtube.js -o dist/Youtube.min.js",
+    "lint": "jshint .",
+    "test": "karma start --single-run",
+    "validate": "npm ls"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "devDependencies": {
+    "http-server": "^0.8.0",
+    "jasmine-core": "^2.3.4",
+    "jshint": "^2.8.0",
+    "karma": "^0.12.37",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-jasmine": "^0.3.6",
+    "mkdirp": "^0.5.1",
+    "precommit-hook": "^3.0.0",
+    "uglify-js": "^2.4.23"
+  },
+  "dependencies": {
+    "video.js": "^5.6.0"
+  },
+  "readme": "# YouTube Playback Technology<br />for [Video.js](https://github.com/videojs/video.js)\n\n## Install\nYou can use bower (`bower install videojs-youtube`), npm (`npm install videojs-youtube`) or the source and build it using `npm run build`. Then, the only file you need is dist/Youtube.min.js.\n\n## Version Note\nUse branch `vjs4` if you still using old VideoJS `v4.x`.\n\n## Example\n```html\n<!DOCTYPE html>\n<html>\n<head>\n  <link type=\"text/css\" rel=\"stylesheet\" href=\"../node_modules/video.js/dist/video-js.min.css\" />\n</head>\n<body>\n  <video\n    id=\"vid1\"\n    class=\"video-js vjs-default-skin\"\n    controls\n    autoplay\n    width=\"640\" height=\"264\"\n    data-setup='{ \"techOrder\": [\"youtube\"], \"sources\": [{ \"type\": \"video/youtube\", \"src\": \"https://www.youtube.com/watch?v=xjS6SftYQaQ\"}] }'\n  >\n  </video>\n\n  <script src=\"../node_modules/video.js/dist/video.min.js\"></script>\n  <script src=\"../dist/Youtube.min.js\"></script>\n</body>\n</html>\n```\n\nSee the examples folder for more\n\n## How does it work?\nIncluding the script Youtube.min.js will add the YouTube as a tech. You just have to add it to your techOrder option. Then, you add the option src with your YouTube URL.\n\nIt supports:\n- youtube.com as well as youtu.be\n- Regular URLs: http://www.youtube.com/watch?v=xjS6SftYQaQ\n- Embeded URLs: http://www.youtube.com/embed/xjS6SftYQaQ\n- Playlist URLs: http://www.youtube.com/playlist?list=PLA60DCEB33156E51F OR http://www.youtube.com/watch?v=xjS6SftYQaQ&list=SPA60DCEB33156E51F\n\n## Options\nIt supports every regular Video.js options. Additionally, you can change any [YouTube parameter](https://developers.google.com/youtube/player_parameters?hl=en#Parameters). Here is an example of setting the `iv_load_policy` parameter to `1`.\n\n```html\n<video\n  id=\"vid1\"\n  class=\"video-js vjs-default-skin\"\n  controls\n  autoplay\n  width=\"640\" height=\"264\"\n  data-setup='{ \"techOrder\": [\"youtube\"], \"sources\": [{ \"type\": \"video/youtube\", \"src\": \"https://www.youtube.com/watch?v=xjS6SftYQaQ\"}], \"youtube\": { \"iv_load_policy\": 1 } }'\n>\n</video>\n```\n\n### YouTube controls\nBecause `controls` is already a Video.js option, to use the YouTube controls, you must set the `ytControls` parameter.\n\n```html\n<video\n  id=\"vid1\"\n  class=\"video-js vjs-default-skin\"\n  controls\n  autoplay\n  width=\"640\" height=\"264\"\n  data-setup='{ \"techOrder\": [\"youtube\"], \"sources\": [{ \"type\": \"video/youtube\", \"src\": \"https://www.youtube.com/watch?v=xjS6SftYQaQ\"}], \"youtube\": { \"ytControls\": 2 } }'\n>\n</video>\n```\n\n##Special Thank You\nThanks to Steve Heffernan for the amazing Video.js and to John Hurliman for the original version of the YouTube tech\n\n## License\nThe MIT License (MIT)\n\nCopyright (c) 2014-2015 Benoit Tremblay <trembl.ben@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/eXon/videojs-youtube/issues"
+  },
+  "_id": "videojs-youtube@2.0.8",
+  "dist": {
+    "shasum": "f9e051f901281497f4c28cf1b5741123ea8c7c3c"
+  },
+  "_from": "videojs-youtube@",
+  "_resolved": "https://registry.npmjs.org/videojs-youtube/-/videojs-youtube-2.0.8.tgz"
+}

@@ -8,6 +8,11 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import servlets.SearchServlet;
 
+/**
+ * @author Sherafgan Kandov
+ *         6/19/16.
+ */
+
 public class Main {
     public static void main(String[] args) throws Exception {
         StartupPipeline startupPipeline = StartupPipeline.INSTANCE;
@@ -17,7 +22,7 @@ public class Main {
         context.addServlet(new ServletHolder(new SearchServlet()), "/search");
 
         ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setResourceBase("public_html");
+        resource_handler.setResourceBase("src/main/resources");
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});

@@ -14,6 +14,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @author Sherafgan Kandov
+ *         6/19/16.
+ */
+
 public class SearchServlet extends HttpServlet {
     private static final String SEARCH_TEXT_TOKENS_FILE_NAME = "searchTxtTokens.json";
 

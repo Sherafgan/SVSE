@@ -2,14 +2,21 @@
   "sentences": [
     {
       "index": 0,
-      "parse": "(ROOT\n  (NP (NN DEFAULT)))",
+      "parse": "(ROOT\n  (S\n    (VP (VBG playing)\n      (NP (NN flauta)))))",
       "basic-dependencies": [
         {
           "dep": "ROOT",
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "DEFAULT"
+          "dependentGloss": "playing"
+        },
+        {
+          "dep": "dobj",
+          "governor": 1,
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "flauta"
         }
       ],
       "collapsed-dependencies": [
@@ -18,7 +25,14 @@
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "DEFAULT"
+          "dependentGloss": "playing"
+        },
+        {
+          "dep": "dobj",
+          "governor": 1,
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "flauta"
         }
       ],
       "collapsed-ccprocessed-dependencies": [
@@ -27,20 +41,39 @@
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "DEFAULT"
+          "dependentGloss": "playing"
+        },
+        {
+          "dep": "dobj",
+          "governor": 1,
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "flauta"
         }
       ],
       "tokens": [
         {
           "index": 1,
-          "word": "DEFAULT",
-          "originalText": "DEFAULT",
-          "lemma": "default",
+          "word": "playing",
+          "originalText": "playing",
+          "lemma": "play",
           "characterOffsetBegin": 0,
           "characterOffsetEnd": 7,
-          "pos": "NN",
+          "pos": "VBG",
           "ner": "O",
           "before": "",
+          "after": " "
+        },
+        {
+          "index": 2,
+          "word": "flauta",
+          "originalText": "flauta",
+          "lemma": "flauta",
+          "characterOffsetBegin": 8,
+          "characterOffsetEnd": 14,
+          "pos": "NN",
+          "ner": "O",
+          "before": " ",
           "after": ""
         }
       ]
