@@ -1,67 +1,46 @@
 function searchRequest() {
     var searchText = document.getElementById("searchText");
     $.getJSON("search", {searchText: searchText.value}, function (data) {
+        document.getElementById("content").innerHTML = "";
         // drawTable(data);
-
-        var obj, source;
-
-        obj = document.createElement('video');
-        $(obj).attr('id', 'vid1');
-        $(obj).attr('class', 'video-js vjs-default-skin video');
-        $(obj).attr('width', '640');
-        $(obj).attr('data-height', '264');
-        $(obj).attr('controls', ' ');
-        $(obj).attr('data-setup', '{"techOrder": ["youtube"], "sources": [{"type": "video/youtube", "src":"' + data[0].url + '"}] }');
-
-        // source = document.createElement('source');
-        // $(source).attr('type', 'video/mp4');
-        // $(source).attr('src', 'http://video-js.zencoder.com/oceans-clip.mp4');
-
-        $("#content").append(obj);
-        // $(obj).append(source);
-
-        // video.setAttribute("id", "vid1");
-        // video.setAttribute("class", "video-js vjs-default-skin video");
-        // video.setAttribute("controls", "controls");
-        // video.setAttribute("autoplay", "autoplay");
-        // video.setAttribute("width", "640");
-        // video.setAttribute("height", "264");
-        // video.setAttribute("data-setup", '{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src":' + data[0].url + '}], "youtube": { "ytControls": 2 } }');
-
-        // videojs("vid1", {
-        //     "techOrder": ["youtube"],
-        //     "sources": [{"type": "video/youtube", "src": data[0].url}]
-        // }, function () {
-        //
-        // });
-
+        showVideos(data);
     });
 }
 
 function showVideos(data) {
-    for (var i = 0; i < data.length; i++) {
-        showVideo(data[i], i);
+    for (var i = 0; i < 3; i++) { //NOTE: i < data.length
+        var timeSegments = [];
+        timeSegments = data[i].segments[0];
+        for (var j = 0; j < timeSegments.length; j += 2) {
+            var videoElement = document.createElement("video");
+            videoElement.id = "vid" + i + "" + j;
+            videoElement.className = "video-js vjs-default-skin video";
+            videoElement.autoplay = true;
+            videoElement.controls = true;
+            videoElement.width = "640";
+            videoElement.height = "264";
+            $("#content").append(videoElement);
+
+            videojs(document.getElementById("vid" + i + "" + j), {
+                techOrder: ["youtube"],
+                sources: [{
+                    "type": "video/youtube",
+                    "src": data[i].url.toString(),
+                    "youtube": {"ytControls": 2}
+                }]
+            }, function () {
+            });
+
+
+            var player = videojs("vid" + i + "" + j);
+            player.timeOffset({
+                start: timeSegments[j],
+                end: timeSegments[j + 1]
+            });
+        }
     }
 }
 
-function showVideo(videoInfo, num) {
-    var video = document.createElement('video');
-    var id = "vid" + num + "";
-    video.setAttribute("id", id);
-    video.setAttribute("class", "video-js vjs-default-skin video");
-    video.setAttribute("controls", "controls");
-    video.setAttribute("autoplay", "autoplay");
-    video.setAttribute("width", "640");
-    video.setAttribute("height", "264");
-
-
-    videojs(id, {
-        "techOrder": ["youtube"],
-        "sources": [{"type": "video/youtube", "src": videoInfo.url}]
-    }, function () {
-
-    });
-}
 
 function drawTable(data) {
     for (var i = 0; i < data.length; i++) {

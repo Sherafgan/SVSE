@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-time-offset Demo</title>
+  <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
+</head>
+<body>
+  <video id="videojs-time-offset-player" class="video-js vjs-default-skin" controls>
+    <source src="http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4" type='video/mp4'>
+    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+  </video>
+  <ul>
+    <li><a href="/test/">Run unit tests in browser.</a></li>
+
+  </ul>
+  <script src="/node_modules/video.js/dist/video.js"></script>
+  <script src="/dist/videojs-time-offset.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-time-offset-player');
+      player.timeOffset({page: 1, perPageInMinutes: 1});
+    }(window, window.videojs));
+  </script>
+</body>
+</html>

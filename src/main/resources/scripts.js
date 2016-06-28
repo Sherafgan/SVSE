@@ -2,26 +2,42 @@ function searchRequest() {
     var searchText = document.getElementById("searchText");
     $.getJSON("search", {searchText: searchText.value}, function (data) {
         document.getElementById("content").innerHTML = "";
+        // drawTable(data);
         showVideos(data);
     });
 }
 
 function showVideos(data) {
-    for (var i = 0; i < 10; i++) { //NOTE: i < data.length
-        var videoElement = document.createElement("video");
-        videoElement.id = "vid" + i;
-        videoElement.className = "video-js vjs-default-skin video";
-        // videoElement.autoplay = true;
-        videoElement.controls = true;
-        // videoElement.width = "640";
-        // videoElement.height = "264";
-        $("#content").append(videoElement);
+    for (var i = 0; i < 3; i++) { //NOTE: i < data.length
+        var timeSegments = [];
+        timeSegments = data[i].segments[0];
+        for (var j = 0; j < timeSegments.length; j += 2) {
+            var videoElement = document.createElement("video");
+            videoElement.id = "vid" + i + "" + j;
+            videoElement.className = "video-js vjs-default-skin video";
+            videoElement.autoplay = true;
+            videoElement.controls = true;
+            videoElement.width = "640";
+            videoElement.height = "264";
+            $("#content").append(videoElement);
 
-        videojs(document.getElementById("vid" + i), {
-            techOrder: ["youtube"],
-            sources: [{"type": "video/youtube", "src": data[i].url.toString(), "youtube": {"ytControls": 2}}]
-        }, function () {
-        });
+            videojs(document.getElementById("vid" + i + "" + j), {
+                techOrder: ["youtube"],
+                sources: [{
+                    "type": "video/youtube",
+                    "src": data[i].url.toString(),
+                    "youtube": {"ytControls": 2}
+                }]
+            }, function () {
+            });
+
+
+            var player = videojs("vid" + i + "" + j);
+            player.timeOffset({
+                start: timeSegments[j],
+                end: timeSegments[j + 1]
+            });
+        }
     }
 }
 

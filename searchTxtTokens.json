@@ -2,7 +2,7 @@
   "sentences": [
     {
       "index": 0,
-      "parse": "(ROOT\n  (S\n    (VP (VBG playing)\n      (NP (NN flauta)))))",
+      "parse": "(ROOT\n  (S\n    (VP (VBG playing)\n      (NP (NN piano)))))",
       "basic-dependencies": [
         {
           "dep": "ROOT",
@@ -16,7 +16,7 @@
           "governor": 1,
           "governorGloss": "playing",
           "dependent": 2,
-          "dependentGloss": "flauta"
+          "dependentGloss": "piano"
         }
       ],
       "collapsed-dependencies": [
@@ -32,7 +32,7 @@
           "governor": 1,
           "governorGloss": "playing",
           "dependent": 2,
-          "dependentGloss": "flauta"
+          "dependentGloss": "piano"
         }
       ],
       "collapsed-ccprocessed-dependencies": [
@@ -48,7 +48,7 @@
           "governor": 1,
           "governorGloss": "playing",
           "dependent": 2,
-          "dependentGloss": "flauta"
+          "dependentGloss": "piano"
         }
       ],
       "tokens": [
@@ -66,11 +66,11 @@
         },
         {
           "index": 2,
-          "word": "flauta",
-          "originalText": "flauta",
-          "lemma": "flauta",
+          "word": "piano",
+          "originalText": "piano",
+          "lemma": "piano",
           "characterOffsetBegin": 8,
-          "characterOffsetEnd": 14,
+          "characterOffsetEnd": 13,
           "pos": "NN",
           "ner": "O",
           "before": " ",
