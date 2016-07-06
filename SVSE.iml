@@ -13,6 +13,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="videojs-ie8" level="application" />
     <orderEntry type="library" name="video" level="application" />
+    <orderEntry type="library" name="videojs-ie8" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="video" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-kernel:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-graphdb-api:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-resource:3.0.0" level="project" />
@@ -52,9 +56,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:9.3.0.M0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.3.0.M0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.3.0.M0" level="project" />
-    <orderEntry type="library" name="videojs-ie8" level="application" />
-    <orderEntry type="library" name="bootstrap" level="application" />
-    <orderEntry type="library" name="video" level="application" />
-    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.1" level="project" />
   </component>
 </module>

@@ -31,6 +31,6 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
-        server.join();
+//        server.join();
     }
 }

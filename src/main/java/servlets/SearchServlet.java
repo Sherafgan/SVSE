@@ -1,18 +1,14 @@
 package servlets;
 
+import edu.stanford.nlp.simple.*;
 import main.StartupPipeline;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.*;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.util.Function;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Sherafgan Kandov
@@ -21,8 +17,22 @@ import java.util.List;
 
 public class SearchServlet extends HttpServlet {
     private static final String SEARCH_TEXT_TOKENS_FILE_NAME = "searchTxtTokens.json";
+    private static Set<String> neo4jRels;
+    private static Set<String> neo4jObjs;
 
     public SearchServlet() {
+        String[] neo4jRelsArray = new String[]{"MD", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ"};
+        String[] neo4jObjsArray = new String[]{"NN", "NNS", "NNP", "NNPS", "PDT", "POS"};
+
+        neo4jRels = new HashSet<>();
+        neo4jObjs = new HashSet<>();
+
+        for (String rel : neo4jRelsArray) {
+            neo4jRels.add(rel);
+        }
+        for (String obj : neo4jObjsArray) {
+            neo4jObjs.add(obj);
+        }
     }
 
     @Override
@@ -30,45 +40,36 @@ public class SearchServlet extends HttpServlet {
         String searchText = request.getParameter("searchText");
         //BEGIN Stanford CoreNlp for processing of search text
         StartupPipeline startupPipeline = StartupPipeline.INSTANCE;
-        startupPipeline.annotateText(searchText);
+        Sentence nlpSentence = new Sentence(searchText);
         //END
-        //BEGIN Read search text tokens and search database
-        FileReader fileReader = new FileReader(SEARCH_TEXT_TOKENS_FILE_NAME);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String line, jsonString = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            jsonString += line;
-        }
-        bufferedReader.close();
 
+        //BEGIN Read search text tokens and search database
         String neo4jRelationship = "";
         String neo4jObject = "";
 
-        JSONObject jsonObject = new JSONObject(jsonString);
-        JSONArray sentences = (JSONArray) jsonObject.get("sentences");
-        JSONObject sentence = (JSONObject) sentences.get(0);
-        JSONArray tokens = (JSONArray) sentence.get("tokens");
-        for (int i = 0; i < tokens.length(); i++) {
-            JSONObject token = (JSONObject) tokens.get(i);
-            if (token.get("pos").equals("MD") || token.get("pos").equals("VB") || token.get("pos").equals("VBD")
-                    || token.get("pos").equals("VBG") || token.get("pos").equals("VBN") || token.get("pos").equals("VBP")
-                    || token.get("pos").equals("VBZ")) {
-                neo4jRelationship = token.get("lemma").toString();
-            } else if (token.get("pos").equals("NN") || token.get("pos").equals("NNS") || token.get("pos").equals("NNP")
-                    || token.get("pos").equals("NNPS") || token.get("pos").equals("PDT") || token.get("pos").equals("POS")) {
-                neo4jObject = token.get("lemma").toString();
+        List<String> posTags = nlpSentence.posTags();
+        List<String> lemmas = nlpSentence.lemmas();
+
+        for (int i = 0; i < posTags.size(); i++) {
+            if (neo4jRels.contains(posTags.get(i))) {
+                neo4jRelationship = lemmas.get(i);
+            } else if (neo4jObjs.contains(posTags.get(i))) {
+                neo4jObject = lemmas.get(i);
             }
         }
 
-        if (neo4jRelationship.length() > 1 & neo4jObject.length() > 1) {
+        if (neo4jRelationship.length() > 1) {
             //BEGIN query database to retrieve data
             Session session = startupPipeline.getDbDriver().session();
-            String query = "match(:PERSON)-[relation:" + neo4jRelationship + "]->(object:OBJECT) where object.name=\""
-                    + neo4jObject + "\" return relation.url as URL, relation.segments as Segments";
+            String query = "";
+            if (neo4jRelationship.length() > 1 & neo4jObject.length() > 1) {
+                query = "match(:PERSON)-[relation:" + neo4jRelationship + "]->(object:OBJECT) where object.name=\""
+                        + neo4jObject + "\" return relation.url as URL, relation.segments as Segments";
+            } else if (neo4jRelationship.length() > 1 & neo4jObject.length() == 0) {
+                query = "match(:PERSON)-[relation:" + neo4jRelationship +
+                        "]->() return relation.url as URL, relation.segments as Segments";
+            }
             StatementResult result = session.run(query);
-//            Map<String, List<Double>> urlToSegments = new HashMap<>();
-//            Map<Integer, String> numberToUrl = new HashMap<>();
-//            int j = 0;
 
             JSONArray finalJsonArray = new JSONArray();
             while (result.hasNext()) {
@@ -85,14 +86,11 @@ public class SearchServlet extends HttpServlet {
                         .append("segments", segments.toArray());
                 finalJsonArray.put(urlAndSegments);
 
-//                numberToUrl.put(j, url);
-//                urlToSegments.put(url, segments);
-//                j++;
             }
             session.close();
             //END
+
             //BEGIN send urlToSegments map as JSON object to frontend
-//            JSONObject urlToSegmentsJSON = new JSONObject(urlToSegments);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             String JsonArrayToWrite = finalJsonArray.toString();

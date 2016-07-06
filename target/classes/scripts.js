@@ -1,4 +1,4 @@
-var resLim = 10;
+var resLim = 10, numberOfVideos = 0;
 
 function searchRequest() {
     var searchText = document.getElementById("searchText");
@@ -13,12 +13,11 @@ var globalData, globalI, globalJ;
 
 function showVideos(data) {
     globalData = data;
-    for (var i = 0; i < data.length; i++) { //NOTE: i < data.length
+    for (var i = 0; i < data.length; i++) {
         var timeSegments = [];
         timeSegments = data[i].segments[0];
         for (var j = 0; j < timeSegments.length; j += 2) {
-            if ((((j + 2) / 2) + (i + 1) ) <= resLim) {
-                // 0 2, 2 4, 4 6, 6 8,
+            if (numberOfVideos < resLim) {
                 var videoElement = document.createElement("video");
                 videoElement.id = "vid" + i + "" + j;
                 videoElement.className = "video-js vjs-default-skin video";
@@ -44,6 +43,7 @@ function showVideos(data) {
                     start: timeSegments[j],
                     end: timeSegments[j + 1]
                 });
+                numberOfVideos++;
             } else {
                 globalI = i;
                 globalJ = j;
@@ -65,7 +65,7 @@ function moreVideos() {
         var timeSegments = [];
         timeSegments = data[i].segments[0];
         for (var j = globalJ; j < timeSegments.length; j += 2) {
-            if ((((j + 2) / 2) + (i + 1) ) <= resLim) {
+            if (numberOfVideos < resLim) {
                 var videoElement = document.createElement("video");
                 videoElement.id = "vid" + i + "" + j;
                 videoElement.className = "video-js vjs-default-skin video";
@@ -91,6 +91,7 @@ function moreVideos() {
                     start: timeSegments[j],
                     end: timeSegments[j + 1]
                 });
+                numberOfVideos++;
             } else {
                 globalI = i;
                 globalJ = j;

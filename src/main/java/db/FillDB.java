@@ -1,9 +1,7 @@
 package db;
 
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import edu.stanford.nlp.simple.Sentence;
+import org.json.*;
 import org.neo4j.driver.v1.*;
 
 import java.io.*;
@@ -37,6 +35,23 @@ public class FillDB {
         Session session = driver.session();
         //END
 
+        String[] neo4jRelsArray = new String[]{"MD", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ"};
+        String[] neo4jObjsArray = new String[]{"NN", "NNS", "NNP", "NNPS", "PDT", "POS"};
+
+        Set<String> neo4jRels = new HashSet<>();
+        Set<String> neo4jObjs = new HashSet<>();
+
+        for (String rel : neo4jRelsArray) {
+            neo4jRels.add(rel);
+        }
+        for (String obj : neo4jObjsArray) {
+            neo4jObjs.add(obj);
+        }
+
+        //Writing out unparsed data for analyse
+        FileWriter fileWriterForUnparsedAnnotations = new FileWriter("UnparsedAnnotations.txt");
+        BufferedWriter bufferedWriterForUnparsedAnnotations = new BufferedWriter(fileWriterForUnparsedAnnotations);
+
         int amountOfDataToFill = video_info_array.length();
         for (int i = 0; i < amountOfDataToFill; i++) {
             HashMap<String, List<Double>> labelToSegments = new HashMap<>();
@@ -64,15 +79,6 @@ public class FillDB {
                 }
             }
 
-            //Annotating labels and writing to JSONs
-            int l = 0;
-            Set<String> labels = labelToSegments.keySet();
-            for (String label : labels) {
-                annotateLabel(label, l);
-                l++;
-            }
-
-            int c = 0;
             Iterator iterator = labelToSegments.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry pair = (Map.Entry) iterator.next();
@@ -80,47 +86,43 @@ public class FillDB {
                 String neo4jRelationship = "";
                 String neo4jObject = "";
 
-                FileReader fileReader1 = new FileReader("annotatedJSONs/jsonOutput" + c + ".json");
-                BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
-                String line, finalLine = "";
-                while ((line = bufferedReader1.readLine()) != null) {
-                    finalLine += line;
-                }
-                bufferedReader1.close();
-                JSONObject jsonObject = new JSONObject(finalLine);
-                JSONArray sentences = (JSONArray) jsonObject.get("sentences");
-                JSONObject sentence = (JSONObject) sentences.get(0);
-                JSONArray tokens = (JSONArray) sentence.get("tokens");
-                for (int q = 0; q < tokens.length(); q++) {
-                    JSONObject token = (JSONObject) tokens.get(q);
-                    if (token.get("pos").equals("MD") || token.get("pos").equals("VB") || token.get("pos").equals("VBD")
-                            || token.get("pos").equals("VBG") || token.get("pos").equals("VBN") || token.get("pos").equals("VBP")
-                            || token.get("pos").equals("VBZ")) {
-                        neo4jRelationship = token.get("lemma").toString();
-                    } else if (token.get("pos").equals("NN") || token.get("pos").equals("NNS") || token.get("pos").equals("NNP")
-                            || token.get("pos").equals("NNPS") || token.get("pos").equals("PDT") || token.get("pos").equals("POS")) {
-                        neo4jObject = token.get("lemma").toString();
+                //BEGIN
+                Sentence sentence = new Sentence(pair.getKey().toString());
+                List<String> posTags = sentence.posTags();
+                List<String> lemmas = sentence.lemmas();
+                for (int q = 0; q < posTags.size(); q++) {
+                    if (neo4jRels.contains(posTags.get(q))) {
+                        neo4jRelationship = lemmas.get(q);
+                    } else if (neo4jObjs.contains(posTags.get(q))) {
+                        neo4jObject = lemmas.get(q);
                     }
                 }
-                if (neo4jRelationship.length() > 1 & neo4jObject.length() > 1) {
-                    queryDataToDB(session, neo4jRelationship, neo4jObject, video_info_object, labelToSegments, (String) pair.getKey());
-
-                    //BEGIN write queries to dump file
-//                    String query = "create(:Person)-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegments.get((String) pair.getKey()) + "}"
-//                            + "]->(:Object{name:\"" + neo4jObject + "\"});";
-//                    bufferedWriter.write(query + "\n");
-                    //END
+                if (neo4jRelationship.length() > 1) {
+                    String query = "";
+                    if (neo4jRelationship.length() > 1 & neo4jObject.length() > 1) {
+                        query = "merge(:PERSON)-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\"," + "segments:"
+                                + labelToSegments.get(pair.getKey().toString()) + "}" + "]->(:OBJECT{name:\"" + neo4jObject + "\"})";
+                        session.run(query);
+                    } else if (neo4jRelationship.length() > 1 & neo4jObject.length() == 0) {
+                        query = "merge()-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\","
+                                + "segments:" + labelToSegments.get(pair.getKey().toString()) + "}" + "]->()";
+                    }
+                    session.run(query);
                     succeedLabelsOfAnnotations++;
-                    totalNumberOfLabelsOfAnnotations++;
                 } else {
-                    totalNumberOfLabelsOfAnnotations++;
+                    bufferedWriterForUnparsedAnnotations.write((totalNumberOfLabelsOfAnnotations - succeedLabelsOfAnnotations + 1)
+                            + ". " + pair.getKey().toString() + "\n");
                 }
-                c++;
+                totalNumberOfLabelsOfAnnotations++;
+                //END
             }
             System.out.println((i + 1) + " of " + amountOfDataToFill);
         }
         bufferedWriter.flush();
         bufferedWriter.close();
+
+        bufferedWriterForUnparsedAnnotations.flush();
+        bufferedWriterForUnparsedAnnotations.close();
 
         //BEGIN Neo4j driver&session close
         session.close();
@@ -157,55 +159,5 @@ public class FillDB {
             e.printStackTrace();
         }
         return output.toString();
-    }
-
-    private static void queryDataToDB(Session session, String rel, String obj, JSONObject video_info_object, HashMap<String, List<Double>> labelToSegment, String label) {
-
-        String query = "merge(:PERSON)-[:" + rel + "{url:\"" + video_info_object.get("url") + "\"," + "segments:" + labelToSegment.get(label) + "}"
-                + "]->(:OBJECT{name:\"" + obj + "\"})";
-        session.run(query);
-
-//        StatementResult result = session.run("MATCH (a:Person) WHERE a.name = 'Arthur' RETURN a.name AS name, a.title AS title");
-//        while (result.hasNext()) {
-//            Record record = result.next();
-//            System.out.println(record.get("title").asString() + " " + record.get("name").asString());
-//        }
-    }
-
-    private static void annotateLabel(String label, int annotationNum) throws IOException {
-        PrintWriter jsonOut = new PrintWriter("annotatedJSONs/jsonOutput" + annotationNum + ".json");
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        Annotation annotation = new Annotation(label);
-        pipeline.annotate(annotation);
-        pipeline.jsonPrint(annotation, jsonOut);
-        jsonOut.flush();
-        jsonOut.close();
-    }
-
-    private static void parseDatasetTo(String datasetFileName, String parsedArrayOfAnnotations) {
-        try {
-            FileReader fileReader = new FileReader(datasetFileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String jsonString = bufferedReader.readLine();
-            bufferedReader.close();
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONObject databaseObject = jsonObject.getJSONObject("database");
-
-            JSONArray annotationsArray = new JSONArray();
-            Set<String> keysOfDbObject = databaseObject.keySet();
-            for (String key : keysOfDbObject) {
-                annotationsArray.put(databaseObject.get(key));
-            }
-
-            FileWriter fileWriter = new FileWriter(parsedArrayOfAnnotations);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(annotationsArray.toString());
-            bufferedWriter.flush();
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -2,28 +2,21 @@
   "sentences": [
     {
       "index": 0,
-      "parse": "(ROOT\n  (S\n    (VP (VBG making)\n      (NP (DT an) (NN omelette)))))",
+      "parse": "(ROOT\n  (S\n    (VP (VBG playing)\n      (NP (NN piano)))))",
       "basic-dependencies": [
         {
           "dep": "ROOT",
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "making"
-        },
-        {
-          "dep": "det",
-          "governor": 3,
-          "governorGloss": "omelette",
-          "dependent": 2,
-          "dependentGloss": "an"
+          "dependentGloss": "playing"
         },
         {
           "dep": "dobj",
           "governor": 1,
-          "governorGloss": "making",
-          "dependent": 3,
-          "dependentGloss": "omelette"
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "piano"
         }
       ],
       "collapsed-dependencies": [
@@ -32,21 +25,14 @@
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "making"
-        },
-        {
-          "dep": "det",
-          "governor": 3,
-          "governorGloss": "omelette",
-          "dependent": 2,
-          "dependentGloss": "an"
+          "dependentGloss": "playing"
         },
         {
           "dep": "dobj",
           "governor": 1,
-          "governorGloss": "making",
-          "dependent": 3,
-          "dependentGloss": "omelette"
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "piano"
         }
       ],
       "collapsed-ccprocessed-dependencies": [
@@ -55,31 +41,24 @@
           "governor": 0,
           "governorGloss": "ROOT",
           "dependent": 1,
-          "dependentGloss": "making"
-        },
-        {
-          "dep": "det",
-          "governor": 3,
-          "governorGloss": "omelette",
-          "dependent": 2,
-          "dependentGloss": "an"
+          "dependentGloss": "playing"
         },
         {
           "dep": "dobj",
           "governor": 1,
-          "governorGloss": "making",
-          "dependent": 3,
-          "dependentGloss": "omelette"
+          "governorGloss": "playing",
+          "dependent": 2,
+          "dependentGloss": "piano"
         }
       ],
       "tokens": [
         {
           "index": 1,
-          "word": "making",
-          "originalText": "making",
-          "lemma": "make",
+          "word": "playing",
+          "originalText": "playing",
+          "lemma": "play",
           "characterOffsetBegin": 0,
-          "characterOffsetEnd": 6,
+          "characterOffsetEnd": 7,
           "pos": "VBG",
           "ner": "O",
           "before": "",
@@ -87,23 +66,11 @@
         },
         {
           "index": 2,
-          "word": "an",
-          "originalText": "an",
-          "lemma": "a",
-          "characterOffsetBegin": 7,
-          "characterOffsetEnd": 9,
-          "pos": "DT",
-          "ner": "O",
-          "before": " ",
-          "after": " "
-        },
-        {
-          "index": 3,
-          "word": "omelette",
-          "originalText": "omelette",
-          "lemma": "omelette",
-          "characterOffsetBegin": 10,
-          "characterOffsetEnd": 18,
+          "word": "piano",
+          "originalText": "piano",
+          "lemma": "piano",
+          "characterOffsetBegin": 8,
+          "characterOffsetEnd": 13,
           "pos": "NN",
           "ner": "O",
           "before": " ",
