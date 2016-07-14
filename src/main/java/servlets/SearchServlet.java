@@ -95,7 +95,7 @@ public class SearchServlet extends HttpServlet {
             response.setCharacterEncoding("utf-8");
             String JsonArrayToWrite = finalJsonArray.toString();
             response.getWriter().write(JsonArrayToWrite);
-//            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_OK);
             //END
         }
         //END

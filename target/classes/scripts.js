@@ -1,110 +1,94 @@
 var resLim = 10, numberOfVideos = 0;
 
+var globalData, globalI, globalJ;
+
 function searchRequest() {
     var searchText = document.getElementById("searchText");
     $.getJSON("search", {searchText: searchText.value}, function (data) {
-        document.getElementById("content").innerHTML = "";
+        var main = document.getElementById("content");
+        main.innerHTML = "";
+        main.appendChild(document.createElement("p").appendChild(document.createTextNode("About " + data.length + " results")));
         // drawTable(data);
-        showVideos(data);
+        // showVideos(data);
+
+        showYouTubeVideos(data);
     });
 }
 
-var globalData, globalI, globalJ;
-
-function showVideos(data) {
+function showYouTubeVideos(data) {
     globalData = data;
     for (var i = 0; i < data.length; i++) {
         var timeSegments = [];
         timeSegments = data[i].segments[0];
-        for (var j = 0; j < timeSegments.length; j += 2) {
-            if (numberOfVideos < resLim) {
-                var videoElement = document.createElement("video");
-                videoElement.id = "vid" + i + "" + j;
-                videoElement.className = "video-js vjs-default-skin video";
-                // videoElement.autoplay = true;
-                videoElement.controls = true;
-                videoElement.width = "640";
-                videoElement.height = "264";
-                $("#content").append(videoElement);
+        if (numberOfVideos < resLim) {
+            var videoScope = document.createElement("div");
+            var par = document.createElement("p");
+            par.appendChild(document.createTextNode("sd"));
+            videoScope.align = "left";
 
-                videojs(document.getElementById("vid" + i + "" + j), {
-                    techOrder: ["youtube"],
-                    sources: [{
-                        "type": "video/youtube",
-                        "src": data[i].url.toString(),
-                        "youtube": {"ytControls": 2}
-                    }]
-                }, function () {
-                });
+            var url = data[i].url.toString();
+            var id = url.split("https://www.youtube.com/watch?v=");
+            var embedUrl = "https://www.youtube.com/embed/" + id[1];
 
+            var iframeVid = document.createElement("iframe");
+            iframeVid.src = embedUrl;
+            iframeVid.setAttribute("allowfullscreen", "true");
+            iframeVid.frameborder = "0";
+            iframeVid.width = "420";
+            iframeVid.height = "200";
+            iframeVid.align = "middle";
+            iframeVid.style.margin = "10px 10px 10px 10px";
 
-                var player = videojs("vid" + i + "" + j);
-                player.timeOffset({
-                    start: timeSegments[j],
-                    end: timeSegments[j + 1]
-                });
-                numberOfVideos++;
-            } else {
-                globalI = i;
-                globalJ = j;
-                i = data.length;
-                j = timeSegments.length;
-                resLim += 10;
-                var moreButton = '<button id="moreBtn" type="button" class="btn btn btn-default center-block center-button" onclick="moreVideos();">More</button>';
-                $("#content").append(moreButton);
-            }
+            videoScope.appendChild(iframeVid);
+            videoScope.appendChild(par);
+            $("#content").append(videoScope);
+            numberOfVideos++;
+        } else {
+            globalI = i;
+            i = data.length;
+            resLim += 10;
+            var moreButton = '<button id="moreBtn" type="button" class="btn btn btn-default center-block center-button" onclick="moreYouTubeVideos();">More</button>';
+            $("#content").append(moreButton);
         }
+
     }
 }
 
-function moreVideos() {
+function moreYouTubeVideos() {
     var btnToRemove = document.getElementById('moreBtn');
     btnToRemove.parentNode.removeChild(btnToRemove);
     var data = globalData;
     for (var i = globalI; i < data.length; i++) { //NOTE: i < data.length
         var timeSegments = [];
         timeSegments = data[i].segments[0];
-        for (var j = globalJ; j < timeSegments.length; j += 2) {
-            if (numberOfVideos < resLim) {
-                var videoElement = document.createElement("video");
-                videoElement.id = "vid" + i + "" + j;
-                videoElement.className = "video-js vjs-default-skin video";
-                // videoElement.autoplay = true;
-                videoElement.controls = true;
-                videoElement.width = "640";
-                videoElement.height = "264";
-                $("#content").append(videoElement);
+        if (numberOfVideos < resLim) {
+            var videoScope = document.createElement("div");
 
-                videojs(document.getElementById("vid" + i + "" + j), {
-                    techOrder: ["youtube"],
-                    sources: [{
-                        "type": "video/youtube",
-                        "src": data[i].url.toString(),
-                        "youtube": {"ytControls": 2}
-                    }]
-                }, function () {
-                });
+            var url = data[i].url.toString();
+            var id = url.split("https://www.youtube.com/watch?v=");
+            var embedUrl = "https://www.youtube.com/embed/" + id[1];
 
+            var iframeVid = document.createElement("iframe");
+            iframeVid.src = embedUrl;
+            iframeVid.setAttribute("allowfullscreen", "true");
+            iframeVid.frameborder = "0";
+            iframeVid.width = "420";
+            iframeVid.height = "200";
+            iframeVid.align = "middle";
+            iframeVid.style.margin = "10px 10px 10px 10px";
 
-                var player = videojs("vid" + i + "" + j);
-                player.timeOffset({
-                    start: timeSegments[j],
-                    end: timeSegments[j + 1]
-                });
-                numberOfVideos++;
-            } else {
-                globalI = i;
-                globalJ = j;
-                i = data.length;
-                j = timeSegments.length;
-                resLim += 10;
-                var moreButton = '<button id="moreBtn" type="button" class="btn btn btn-default center-block center-button" onclick="moreVideos();">More</button>';
-                $("#content").append(moreButton);
-            }
+            videoScope.appendChild(iframeVid)
+            $("#content").append(videoScope);
+            numberOfVideos++;
+        } else {
+            globalI = i;
+            i = data.length;
+            resLim += 10;
+            var moreButton = '<button id="moreBtn" type="button" class="btn btn btn-default center-block center-button" onclick="moreVideos();">More</button>';
+            $("#content").append(moreButton);
         }
     }
 }
-
 
 function drawTable(data) {
     for (var i = 0; i < data.length; i++) {

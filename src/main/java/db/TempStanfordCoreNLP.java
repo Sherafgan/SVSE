@@ -1,5 +1,6 @@
 package db;
 
+import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.simple.*;
 
 import java.util.List;
@@ -10,14 +11,7 @@ import java.util.List;
  */
 public class TempStanfordCoreNLP {
     public static void main(String[] args) {
-        Sentence sentence = new Sentence("Barack Obama, the president of the USA, is playing soccer");
-        sentence.nerTags();
-        List<String> posTags = sentence.posTags();
-        List<String> lemmas = sentence.lemmas();
-        for (int i = 0; i < posTags.size(); i++) {
-            if (posTags.get(i).equals("NN")) {
-                System.out.println(lemmas.get(i));
-            }
-        }
+        Sentence sentence = new Sentence("playing ice hockey");
+        SemanticGraph graph = sentence.dependencyGraph();
     }
 }

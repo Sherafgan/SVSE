@@ -86,7 +86,7 @@ public class FillDB {
                 String neo4jRelationship = "";
                 String neo4jObject = "";
 
-                //BEGIN
+                //BEGIN annotate and fill in DB
                 Sentence sentence = new Sentence(pair.getKey().toString());
                 List<String> posTags = sentence.posTags();
                 List<String> lemmas = sentence.lemmas();
