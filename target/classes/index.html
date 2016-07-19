@@ -14,40 +14,39 @@
     <!-- Latest compiled JavaScript -->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-    <!-- My script-->
-    <script src="scripts.js"></script>
-
     <!--YouTube IFrame API-->
     <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- My script-->
+    <script src="scripts.js"></script>
 </head>
 <body>
-
-<!--Search bar-->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            <div id="imaginary_container">
-                <div class="input-group stylish-input-group">
-                    <input id="searchText" type="text" class="form-control" placeholder="Search">
-                    <span class="input-group-addon">
+<div id="mainDiv">
+    <!--Search bar-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <div id="imaginary_container">
+                    <div class="input-group stylish-input-group">
+                        <input id="searchText" type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-addon">
                        <button onclick="searchRequest()" type="button">
                             <span class="glyphicon glyphicon-search"></span>
                         </button>
                     </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="content"></div>
 </div>
-
-<div id="content"></div>
-
-<!--<table id="personDataTable">-->
+<!--<table id="dataTable">-->
 <!--<tr>-->
 <!--<th>url</th>-->
 <!--<th>segments</th>-->
 <!--</tr>-->
 <!--</table>-->
-
 </body>
 </html>

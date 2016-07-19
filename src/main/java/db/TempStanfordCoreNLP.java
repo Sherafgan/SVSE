@@ -13,5 +13,6 @@ public class TempStanfordCoreNLP {
     public static void main(String[] args) {
         Sentence sentence = new Sentence("playing ice hockey");
         SemanticGraph graph = sentence.dependencyGraph();
+        System.out.println();
     }
 }

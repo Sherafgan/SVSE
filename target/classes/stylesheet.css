@@ -1,3 +1,20 @@
+.resultDiv {
+    width: 100%;
+    float: left;
+}
+
+.annotationDiv {
+    margin-top: 10px;
+}
+
+.sideDiv {
+    float: left;
+}
+
+.container {
+    position: relative;
+}
+
 .center-button {
     margin-top: 5px;
     margin-right: 5px;
