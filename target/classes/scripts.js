@@ -1,4 +1,4 @@
-var resLim = 10, numberOfVideos = 0, globalData, globalI;
+var resLim = 10, numberOfVideos = 0, globalI = 0, globalData;
 
 function searchRequest() {
     var searchText = document.getElementById("searchText");
@@ -7,9 +7,10 @@ function searchRequest() {
         main.innerHTML = "";
         numberOfVideos = 0;
         resLim = 10;
+        globalI = 0;
         // main.appendChild(document.createElement("p").appendChild(document.createTextNode("About " + data.length + " results")));
         var numberOfResultsDiv = document.createElement("div");
-        numberOfResultsDiv.style = "margin-left:13px;";
+        numberOfResultsDiv.style = "margin-left:13px;margin-top:10px";
         var resultsTxt = document.createTextNode("About " + data.length + " results");
         var par = document.createElement("p");
         par.style.fontSize = "11px";
@@ -19,14 +20,12 @@ function searchRequest() {
         // main.appendChild(numberOfResultsDiv);
 
         // drawTable(data);
+        globalData = data;
         showYouTubeVideos(data);
     });
 }
 
 function showYouTubeVideos(data) {
-
-    globalData = data;
-    globalI = 0;
     var resultsPerPage;
     if (data.length - resLim <= 0) {
         resultsPerPage = data.length;
@@ -72,21 +71,21 @@ function showYouTubeVideos(data) {
         var firstTimeSegment = true;
         var timeSegmentsString = "";
         for (var j = 0; j < timeSegments.length; j += 2) {
-            var start = Math.round(timeSegments[j]);
-            var end = Math.round(timeSegments[j + 1]);
+            var start = "" + Math.round(timeSegments[j]);
+            var end = "" + Math.round(timeSegments[j + 1]);
             if (start != end) {
                 if (firstTimeSegment) {
-                    timeSegmentsString += start + "-" + end;
+                    timeSegmentsString += start.toHHMMSS() + "-" + end.toHHMMSS();
                     firstTimeSegment = false;
                 } else {
-                    timeSegmentsString += ", " + start + "-" + end;
+                    timeSegmentsString += ", " + start.toHHMMSS() + "-" + end.toHHMMSS();
                 }
             }
             matchScore += (end - start);
         }
         var matchScorePercentage = Math.round((matchScore * 100) / length);
-        var timeSegmentsInfo = document.createElement("h4");
-        timeSegmentsInfo.appendChild(document.createTextNode("Time segments: " + timeSegmentsString + " (sec)"));
+        var timeSegmentsInfo = document.createElement("p");
+        timeSegmentsInfo.appendChild(document.createTextNode("Time segments: " + timeSegmentsString));
         var matchScoreInfo = document.createElement("p");
         matchScoreInfo.appendChild(document.createTextNode("Match score: "
             + matchScore + " seconds in total (" + matchScorePercentage + "%)"));
@@ -119,53 +118,36 @@ $(document).ready(function () {
     win.scroll(function () {
         // End of the document reached?
         if ($(document).height() - win.height() == win.scrollTop()) {
-            var resultsPerPage;
-            if (globalData.length - resLim <= 0) {
-                resultsPerPage = globalData.length;
-            } else {
-                resultsPerPage = resLim;
-            }
-            for (var i = globalI; i < resultsPerPage; i++) {
-                var timeSegments = [];
-                timeSegments = globalData[i].segments[0];
-                var url = globalData[i].url.toString();
-                var id = url.split("https://www.youtube.com/watch?v=");
-                var embedUrl = "https://www.youtube.com/embed/" + id[1];
-
-                var iframeVid = document.createElement("iframe");
-                iframeVid.src = embedUrl;
-                iframeVid.setAttribute("allowfullscreen", "true");
-                iframeVid.frameborder = "0";
-                iframeVid.width = "400";
-                iframeVid.height = "180";
-                // iframeVid.align = "middle";
-                iframeVid.style.margin = "10px 10px 10px 10px";
-
-                var videoDiv = document.createElement("div");
-                videoDiv.className = "sideDiv";
-                videoDiv.appendChild(iframeVid);
-
-                var annotationInfo = document.createElement("p");
-                annotationInfo.appendChild(document.createTextNode("#" + (numberOfVideos + 1)));
-
-                var annotationDiv = document.createElement("div");
-                annotationDiv.className = "sideDiv annotationDiv";
-                annotationDiv.appendChild(annotationInfo);
-
-                var resultDiv = document.createElement("div");
-                resultDiv.className = "resultDiv";
-                var childResultDiv = document.createElement("div");
-                childResultDiv.appendChild(videoDiv);
-                childResultDiv.appendChild(annotationDiv);
-                resultDiv.appendChild(childResultDiv);
-                $("#content").append(resultDiv);
-                numberOfVideos++;
-            }
-            globalI = resLim;
-            resLim += 10;
+            showYouTubeVideos(globalData);
         }
     });
 });
+
+String.prototype.toHHMMSS = function () {
+    var sec_num = parseInt(this, 10); // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    var result = "";
+
+    if (hours != 0) {
+        result += hours + ":";
+    }
+    if (minutes > 0) {
+        result += minutes + ":";
+    } else if (hours != 0) {
+        result += "0" + minutes + ":";
+    } else {
+        result += minutes + ":";
+    }
+    if (seconds < 10) {
+        result += "0" + seconds;
+    } else {
+        result += seconds;
+    }
+    return result;
+}
 
 function convert_time_to_mm_ss(duration) {
     var a = duration.match(/\d+/g);
