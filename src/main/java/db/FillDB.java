@@ -12,9 +12,8 @@ import java.util.*;
  *         6/18/16.
  */
 public class FillDB {
-    private static final String DATASET_FILE_NAME = "/home/sherafgan/Downloads/activity_net.v1-3.min.json";
     private static final String ANNOTATIONS_ARRAY_FILE_NAME = "AnnotationsDatasetArray.json";
-    private static final String PATH_TO_CQL_DUMP = "/home/sherafgan/IdeaProjects/SVSE/va_cql_dump.cql";
+    private static final String CQL_DUMP_FILE_NAME = "va_cql_dump.cql";
 
     public static void main(String[] args) throws IOException {
         FileReader fileReader = new FileReader(ANNOTATIONS_ARRAY_FILE_NAME);
@@ -24,8 +23,8 @@ public class FillDB {
 
         JSONArray video_info_array = new JSONArray(annotationsString);
 
-        FileWriter fileWriter = new FileWriter("va_cql_dump.cql");
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+//        FileWriter fileWriter = new FileWriter(CQL_DUMP_FILE_NAME);
+//        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         int totalNumberOfLabelsOfAnnotations = 0;
         int succeedLabelsOfAnnotations = 0;
@@ -118,8 +117,8 @@ public class FillDB {
             }
             System.out.println((i + 1) + " of " + amountOfDataToFill);
         }
-        bufferedWriter.flush();
-        bufferedWriter.close();
+//        bufferedWriter.flush();
+//        bufferedWriter.close();
 
         bufferedWriterForUnparsedAnnotations.flush();
         bufferedWriterForUnparsedAnnotations.close();

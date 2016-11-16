@@ -13,13 +13,16 @@ import java.io.IOException;
  */
 
 public class StartupPipeline {
+    //local neo4j password set  by user or default otherwise
+    private static final String NEO4J_PASSWORD = "smth";
+
     public static final StartupPipeline INSTANCE = new StartupPipeline();
     private static Driver dbDriver;
 
     public void load() throws IOException {
-        Sentence sentence = new Sentence("DEFAULT");
+        Sentence sentence = new Sentence("I saw cat in the hat.");
         sentence.posTags();
-        dbDriver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", "smth"));
+        dbDriver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", NEO4J_PASSWORD));
     }
 
     public Driver getDbDriver() {

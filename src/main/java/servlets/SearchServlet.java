@@ -16,7 +16,6 @@ import java.util.*;
  */
 
 public class SearchServlet extends HttpServlet {
-    private static final String SEARCH_TEXT_TOKENS_FILE_NAME = "searchTxtTokens.json";
     private static Set<String> neo4jRels;
     private static Set<String> neo4jObjs;
 
