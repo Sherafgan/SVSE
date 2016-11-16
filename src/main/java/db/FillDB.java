@@ -12,6 +12,9 @@ import java.util.*;
  *         6/18/16.
  */
 public class FillDB {
+    //local neo4j password set  by user or default otherwise
+    private static final String NEO4J_PASSWORD = "smth";
+
     private static final String ANNOTATIONS_ARRAY_FILE_NAME = "AnnotationsDatasetArray.json";
     private static final String CQL_DUMP_FILE_NAME = "va_cql_dump.cql";
 
@@ -30,7 +33,7 @@ public class FillDB {
         int succeedLabelsOfAnnotations = 0;
 
         //BEGIN Neo4j driver session
-        Driver driver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", "smth"));
+        Driver driver = GraphDatabase.driver("bolt://localhost", AuthTokens.basic("neo4j", NEO4J_PASSWORD));
         Session session = driver.session();
         //END
 
@@ -102,11 +105,13 @@ public class FillDB {
                         query = "merge(:PERSON)-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\"," + "segments:"
                                 + labelToSegments.get(pair.getKey().toString()) + "}" + "]->(:OBJECT{name:\"" + neo4jObject + "\"})";
                         session.run(query);
+//                        bufferedWriter.write(query + "; \n");
                     } else if (neo4jRelationship.length() > 1 & neo4jObject.length() == 0) {
                         query = "merge()-[:" + neo4jRelationship + "{url:\"" + video_info_object.get("url") + "\","
                                 + "segments:" + labelToSegments.get(pair.getKey().toString()) + "}" + "]->()";
                     }
                     session.run(query);
+//                    bufferedWriter.write(query + "; \n");
                     succeedLabelsOfAnnotations++;
                 } else {
                     bufferedWriterForUnparsedAnnotations.write((totalNumberOfLabelsOfAnnotations - succeedLabelsOfAnnotations + 1)
@@ -134,7 +139,7 @@ public class FillDB {
                 + totalNumberOfLabelsOfAnnotations);
         System.out.println("########################################");
 
-//        runCqlDump(PATH_TO_CQL_DUMP);
+//        runCqlDump(CQL_DUMP_FILE_NAME);
     }
 
     private static void runCqlDump(String dumpPath) {
