@@ -6,6 +6,10 @@ SVSE - semantic web video search engine written using following technologies:
   - Neo4j graph database
   - Stanford CoreNLP
 
+How it works?
+
+![SVSE](imgs/SVSE.jpg)
+
 How to run?
 
 1. Install [Neo4j](https://neo4j.com/) graph database
